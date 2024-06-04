@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikacja steganograficzna</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@material/textfield@10.0.0/dist/mdc.textfield.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@material/button@10.0.0/dist/mdc.button.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .form-group input[type="file"] {
+            display: none;
+        }
+        .form-group input[type="text"] {
+            width: calc(100% - 20px);
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .form-group .file-input-label {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .form-group .file-input-label:hover {
+            background-color: #0056b3;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+        .faq-container {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .mdc-expansion-panel {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aplikacja steganograficzna</h1>
+
+        <div class="form-group">
+            <h2>Ukryj wiadomość</h2>
+            <form action="/hide" method="post" enctype="multipart/form-data" onsubmit="return walidujFormularz('hide-image', 'hide-message')">
+                <label for="hide-image" class="file-input-label">Wybierz obraz (w formacie .PNG):</label>
+                <input type="file" id="hide-image" name="image" accept="image/png" onchange="wyswietlNazwePliku('hide-image')" required><br>
+                <span id="hide-image-name" style="font-size: 14px; display: block; margin-bottom: 10px;"></span>
+                <label for="hide-message"><center>Wiadomość do ukrycia:</center></label>
+                <input type="text" id="hide-message" name="message" required><br>
+                <label for="password"><center>Hasło (opcjonalne):</center></label>
+                <input type="password" id="password" name="password"><br><br>
+                <button type="submit" class="mdc-button mdc-button--raised" style="background-color: #6200ee;">Ukryj wiadomość</button>
+            </form>
+        </div>
+        <br>
+        <div class="form-group">
+            <h2>Ujawnij ukrytą wiadomość</h2>
+            <form action="/reveal" method="post" enctype="multipart/form-data" onsubmit="return walidujFormularz('reveal-image', null)">
+                <label for="reveal-image" class="file-input-label">Wybierz obraz (w formacie .PNG):</label>
+                <input type="file" id="reveal-image" name="image" accept="image/png" onchange="wyswietlNazwePliku('reveal-image')" required><br>
+                <span id="reveal-image-name" style="font-size: 14px; display: block; margin-bottom: 10px;"></span>
+                <label for="password"><center>Hasło (opcjonalne):</center></label>
+                <input type="password" id="password" name="password"><br><br>
+                <button type="submit" class="mdc-button mdc-button--raised" style="background-color: #6200ee;">Ujawnij wiadomość</button>
+            </form>
+        </div>
+
+        <div class="faq-container"><br>
+            <h2>Do czego służy ta aplikacja?</h2>
+            <div class="mdc-expansion-panel">
+                <div class="mdc-expansion-panel__content">
+                    <div class="mdc-typography mdc-typography--body2">
+                        Ta aplikacja służy do ukrywania i ujawniania wiadomości tekstowych wewnątrz obrazów w formacie PNG. Proces ten nazywa się steganografią. Aplikacja nie zapisuje obrazów źródłowych ani takich z ukrytą wiadomością, są one usuwane niemal natychmiast po ich przesłaniu lub wygenerowaniu. Aplikacja nie zbiera również żadnych plików cookie.
+                        <br><br>
+                        <b>Ukrywanie:</b>
+                        <ul>
+                            <li>Wybierz obraz PNG i wpisz wiadomość.</li>
+                            <li>Możesz dodać hasło (opcjonalne) dla dodatkowego bezpieczeństwa. Możesz również pozostawić to pole puste.</li>
+                            <li>Aplikacja wygeneruje nowy obraz PNG, wyglądający niemal identycznie, ale zawierający ukrytą wiadomość.</li>
+                        </ul>
+                        <b>Ujawnianie:</b>
+                        <ul>
+                            <li>Wybierz obraz PNG z ukrytą wiadomością.</li>
+                            <li>Jeśli wiadomość została zaszyfrowana, wprowadź poprawne hasło. Jeżeli nie - pozostaw pole "Hasło" puste.</li>
+                            <li>Aplikacja wyświetli ukrytą wiadomość.</li>
+                        </ul>
+                    </div>
+                    <b>Copyright Mirosław Sycz w65511 6IIZ 2024</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function wyswietlNazwePliku(inputId) {
+            const input = document.getElementById(inputId);
+            const nazwaPliku = input.files[0].name;
+            const spanId = inputId + "-name";
+            document.getElementById(spanId).innerText = nazwaPliku;
+        }
+
+        function walidujFormularz(idWejscia, idWiadomosci) {
+            const wejsciePliku = document.getElementById(idWejscia);
+            const wejscieWiadomosci = document.getElementById(idWiadomosci);
+
+            if (!wejsciePliku.value || !wejsciePliku.files[0]) {
+                alert("Proszę wybrać plik!");
+                return false;
+            }
+
+            if (idWiadomosci && !wejscieWiadomosci.value) {
+                alert("Proszę podać wiadomość do ukrycia!");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>
+
+<!-- Mirosław Sycz w65511 06.2024-->
